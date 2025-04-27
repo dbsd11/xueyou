@@ -106,7 +106,7 @@ def createUserInfoPage():
             with gr.Column():
                 age = gr.Textbox(label="age", placeholder="年龄", show_label=True, container=True, elem_id="age-input")
             with gr.Column():
-                college = gr.Textbox(label="college", placeholder="学院", show_label=True, container=True, elem_id="college-input")
+                college = gr.Textbox(label="college", placeholder="院校", show_label=True, container=True, elem_id="college-input")
             with gr.Column():
                 major = gr.Textbox(label="major", placeholder="专业", show_label=True, container=True, elem_id="major-input")
             with gr.Column():
