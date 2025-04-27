@@ -14,9 +14,9 @@ def make_demo():
     with demo.route("UserInfo", "/info"):
         from pages.userinfo import createUserInfoPage
         createUserInfoPage()
-    # with demo.route("Chat", "/chat"):
-    #     from pages.chat import createChatPage
-    #     createChatPage()
+    with demo.route("Chat", "/chat"):
+        from pages.chat import createChatPage
+        createChatPage()
     with demo.route("Study", "/study"):
         from pages.study import createStudyPage
         createStudyPage()
