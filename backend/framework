@@ -1,0 +1,37 @@
+src/main/java
+└── com/wxm/wuyou
+    ├── config
+    │   ├── WebMvcConfig.java       // 拦截器/过滤器配置
+    │   └── RedisConfig.java       // Redis缓存配置
+    ├── controller
+    │   └── StudentController.java // 处理表单提交请求
+    ├── service
+    │   ├── impl
+    │   │   └── StudentServiceImpl.java
+    │   ├── SmsService.java        // 短信验证码服务
+    │   └── StudentService.java    // 核心业务逻辑
+    ├── repository
+    │   └── StudentRepository.java // JPA数据访问接口
+    ├── model
+    │   ├── entity
+    │   │   ├── Student.java       // 学生实体类
+    │   │   └── BrowserInfo.java    // 浏览器信息实体
+    │   ├── dto
+    │   │   └── StudentForm.java    // 表单DTO对象
+    │   └── enums
+    │       └── Gender.java        // 性别枚举
+    ├── utils
+    │   ├── CookieUtil.java        // Cookie操作工具
+    │   ├── UserAgentParser.java   // 浏览器信息解析工具
+    │   └── VerificationCodeUtil.java // 验证码生成器
+    ├── validation
+    │   └── PhoneValidator.java    // 自定义手机号验证器
+    ├── exception
+    │   └── GlobalExceptionHandler.java // 全局异常处理
+    └── StudentinfoApplication.java // 启动类
+
+resources
+├── static          // 静态资源
+├── templates       // 模板文件
+├── application.yml // 主配置文件
+└── messages.properties // 验证提示信息

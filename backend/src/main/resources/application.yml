@@ -1,0 +1,51 @@
+server:
+  port: 18888
+
+# 本地访问地址 ：http://127.0.0.1:8080/
+spring:
+  redis:
+    host: ${redis_host}
+    port: ${redis_port}
+    password: ${redis.password}
+    database: 8
+    timeout: 30000
+   # 密钥配置
+  security:
+    crypto:
+      secretKey: "wxm_secret_key_1234567890"
+  # 数据库连接池配置
+  datasource:
+    url: jdbc:mysql://${mysql_host}:${mysql_port}/wuyou?useSSL=false&serverTimezone=UTC
+    driverClassName: com.mysql.cj.jdbc.Driver
+    username: ${mysql_user}
+    password: ${mysql_password}
+    jpa:
+      database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+      hibernate:
+        ddl-auto: update
+
+cookie:
+  secret: "${COOKIE_SECRET:this_is_aes_secret_key_32bytes_1234567890}"
+
+# 阿里云短信服务配置
+aliyun.sms.access-key-id: ${ALIYUN_SMS_ACCESS_KEY_ID:}
+aliyun.sms.access-key-secret: ${ALIYUN_SMS_ACCESS_KEY_SECRET:}
+aliyun.sms.sign-name: ${ALIYUN_SMS_SIGN_NAME:}
+aliyun.sms.template-code: ${ALIYUN_SMS_TEMPLATE_CODE:}
+
+# 拦截器路径配置
+web:
+  interceptor:
+    includePatterns: /api/**
+    excludePatterns: /api/auth/**, /api/file/**
+
+
+openai:
+  apiKey: ${dashscope_key}
+  apiBase: ${dashscope_base}
+  reasoningModel: ${dashscope_reasoning_model}
+
+oss:
+  endpoint: ${oss_endpoint}
+  accessKey: ${oss_accessKey}
+  secretKey: ${oss_secretKey}
