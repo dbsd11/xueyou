@@ -1,0 +1,177 @@
+
+edition: 1.0.0          #  命令行YAML规范版本，遵循语义化版本（Semantic Versioning）规范
+name: framework         #  项目名称
+# access 是当前应用所需要的密钥信息配置：
+# 密钥配置可以参考：https://www.serverless-devs.com/serverless-devs/command/config
+# 密钥使用顺序可以参考：https://www.serverless-devs.com/serverless-devs/tool#密钥使用顺序与规范
+access: "{{ access }}"
+
+vars:
+  region: "cn-hangzhou" 
+  service_domain: ${env(service_domain)}
+  dashscope_key: ${env(dashscope_key)}
+  dashscope_base: ${env(dashscope_base)}
+  dashscope_reasoning_model: ${env(dashscope_reasoning_model)}
+  oss_endpoint: ${env(oss_endpoint)}
+  oss_accessKey: ${env(oss_accessKey)}
+  oss_secretKey: ${env(oss_secretKey)}
+
+
+services:
+  xueyou-frontend: # 业务名称/模块名称
+    component:  fc    # 组件名称 https://docs.serverless-devs.com/user-guide/aliyun/fc/yaml/readme/
+    actions:          # 自定义执行逻辑
+      pre-deploy:
+        - run: set +e && echo "start deploy ${vars.service_domain} on $server.output.url.custom_domain[0].domain}"
+          path: "s.yaml"
+      post-deploy:  # 在deploy之后运行
+        - run: set +e && echo 'deploy success'
+          path: "s.yaml"
+    props: # 组件的属性值
+      region: ${vars.region}
+      service: 
+        name: "xueyou-frontend"
+        description: 'xueyou frontend server'
+        vpcConfig: auto
+        logConfig: auto
+        ossMountConfig: 
+          mountPoints: 
+            - bucketName: xueyou-tests
+              bucketPath: /models
+              endpoint: https://oss-cn-hangzhou-internal.aliyuncs.com
+              mountDir: /mnt/xueyou-models
+              readOnly: false
+      function:
+        name: "xueyou-frontend-api"
+        description: 'xueyou frontend api'
+        version: 'LATEST'
+        codeUri: '.'
+        runtime: custom-container
+        timeout: 7200
+        caPort: 8080
+        environmentVariables:
+          BACKEND_API_URL: http://xueyou.bdzz.com.cn
+        customContainerConfig: 
+          image: "registry.cn-hangzhou.aliyuncs.com/dbsnolimit/frontend-xueyou:latest"
+        customHealthCheckConfig:
+          failureThreshold: 6
+          httpGetUrl: /api/tags
+          periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          initialDelaySeconds: 30
+        cpu: 4
+        memorySize: 4096 # 单位MB
+        diskSize: 512 # 单位MB
+        instanceConcurrency: 200
+        instanceType: c1
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - HEAD
+              - OPTIONS
+  xueyou-backend: # 业务名称/模块名称
+    component:  fc    # 组件名称，Serverless Devs 工具本身类似于一种游戏机，不具备具体的业务能力，组件类似于游戏卡，用户通过向游戏机中插入不同的游戏卡实现不同的功能，即通过使用不同的组件实现不同的具体业务能力
+    actions:          # 自定义执行逻辑，关于actions 的使用，可以参考：https://www.serverless-devs.com/serverless-devs/yaml#行为描述
+      pre-deploy:
+        - run: set +e && echo "start deploy ${vars.service_domain} on $server.output.url.custom_domain[0].domain}"
+          path: "s.yaml"
+      post-deploy:  # 在deploy之后运行
+        - run: set +e && echo 'deploy success'
+          path: "s.yaml"
+    props: # 组件的属性值
+      region: ${vars.region}
+      service: 
+        name: "xueyou-backend"
+        description: 'xueyou backend server'
+        vpcConfig: auto
+        logConfig: auto
+        nasConfig:
+          userId: 0
+          groupId: 0
+          mountPoints:
+            - serverAddr: 03808482b2-nwn30.cn-hangzhou.nas.aliyuncs.com
+              nasDir: /xueyou-data
+              fcDir: /root/xueyou/data
+      function:
+        name: "xueyou-backend-api"
+        description: 'xueyou backend api'
+        version: 'LATEST'
+        codeUri: '.'
+        runtime: custom-container
+        timeout: 7200
+        caPort: 18888
+        environmentVariables:
+          JAVA_OPTS: >
+            -Dspring.datasource.url=jdbc:h2:/root/xueyou/data;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORE_UNKNOWN_SETTINGS=TRUE;AUTO_RECONNECT=TRUE;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=65000; -Dredis_host=127.0.0.1 -Dredis_port=6379 
+            -Ddashscope_key=${vars.dashscope_key} -Ddashscope_base=${vars.dashscope_base} -Ddashscope_reasoning_model=${vars.dashscope_reasoning_model}
+            -Doss_endpoint=${vars.oss_endpoint} -Doss_accessKey=${vars.oss_accessKey} -Doss_secretKey=${vars.oss_secretKey}
+        customContainerConfig: 
+          image: "registry.cn-hangzhou.aliyuncs.com/dbsnolimit/backend-xueyou:latest"
+        customHealthCheckConfig:
+          failureThreshold: 6
+          httpGetUrl: /
+          periodSeconds: 10
+          timeoutSeconds: 3
+          successThreshold: 1
+          initialDelaySeconds: 10
+        cpu: 1
+        memorySize: 2048 # 单位MB
+        diskSize: 512 # 单位MB
+        instanceConcurrency: 200
+        autoScaling:  
+          minInstances: 0
+          maxInstances: 2  
+          targetConcurrency: 200  # instanceConcurrency * maxInstances
+          rules:  
+            - name: scale-out-cpu  
+              metricType: cpu  
+              metricThreshold: 80  
+              adjustmentType: ChangeInCapacity  
+              adjustmentValue: 1
+            - name: scale-in-cpu 
+              metricType: cpu  
+              metricThreshold: 50  
+              adjustmentType: ChangeInCapacity  
+              adjustmentValue: -1
+            - name: scale-out-memory 
+              metricType: memory  
+              metricThreshold: 80
+              adjustmentType: ChangeInCapacity  
+              adjustmentValue: 1
+            - name: scale-in-memory 
+              metricType: memory  
+              metricThreshold: 50  
+              adjustmentType: ChangeInCapacity  
+              adjustmentValue: -1
+      customDomains:
+        - domainName: ${vars.service_domain}
+          protocol: HTTP
+          routeConfigs:
+            - path: /api/*
+              serviceName: xueyou-backend
+              functionName: xueyou-backend-api
+              qualifier: LATEST
+            - path: /*
+              serviceName: xueyou-frontend
+              functionName: xueyou-frontend-api
+              qualifier: LATEST
+      triggers:
+        - name: httpTrigger
+          type: http
+          config:
+            authType: anonymous
+            methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - HEAD
+              - OPTIONS
