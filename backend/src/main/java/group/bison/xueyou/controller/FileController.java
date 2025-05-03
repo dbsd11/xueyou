@@ -45,6 +45,9 @@ public class FileController {
     @Value("${openai.apiBase}")
     String apiBase;
 
+    @Value("${oss.bucket:}")
+    String bucket;
+
     @PostMapping("/parse-expense-file")
     public ResponseEntity parseExpenseFile(MultipartFile[] files) throws Exception {
         MultiModalConversation conv = new MultiModalConversation();
@@ -53,7 +56,6 @@ public class FileController {
 
         List<Map<String, Object>> userMsgMapList = new LinkedList<>();
         for (MultipartFile file : files) {
-            String bucket = "wuyou-study";
             String object = "expense-files/" + file.getOriginalFilename();
             ossClient.putObject(bucket, object, file.getInputStream());
             URL presignedUrl = ossClient.generatePresignedUrl(bucket, object, new Date(Instant.now().plusSeconds(3600).toEpochMilli()));
