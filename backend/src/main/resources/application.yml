@@ -9,15 +9,11 @@ spring:
     allow-bean-definition-overriding: true
     allow-circular-references: true
   redis:
-    host: ${redis_host:}
-    port: ${redis_port:}
+    host: ${redis_host:127.0.0.1}
+    port: ${redis_port:6379}
     password: ${redis.password:}
     database: 8
     timeout: 30000
-    # 密钥配置
-  security:
-    crypto:
-      secretKey: "wxm_secret_key_1234567890"
   # 数据库连接池配置
   datasource:
     hikari:
@@ -34,6 +30,10 @@ spring:
       database-platform: org.hibernate.dialect.H2Dialect
       hibernate:
         ddl-auto: update
+    # 密钥配置
+  security:
+    crypto:
+      secretKey: "wxm_secret_key_1234567890"
   sql:
     init:
       mode: always
@@ -66,3 +66,4 @@ oss:
   endpoint: ${oss_endpoint:}
   accessKey: ${oss_accessKey:}
   secretKey: ${oss_secretKey:}
+

@@ -1,4 +1,5 @@
 import gradio as gr
+from pages import backend_api
 
 def parseStudyPlanText(studyPlanText):
     import json
@@ -95,7 +96,7 @@ def createStudyPage():
                     const endTime = document.querySelector('#endTime input').value;
 
                     // 获取学习计划并填充表单
-                    fetch(`http://localhost:18888/api/studyplans?startTime=${startTime}&endTime=${endTime}`, {
+                    fetch(`BASE_URL/api/studyplans?startTime=${startTime}&endTime=${endTime}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -116,7 +117,7 @@ def createStudyPage():
                     });
 
                     // 获取学习计划建议
-                    fetch(`http://localhost:18888/api/studyplans/suggestion?startTime=${startTime}&endTime=${endTime}`, {
+                    fetch(`BASE_URL/api/studyplans/suggestion?startTime=${startTime}&endTime=${endTime}`, {
                         method: 'GET',
                         headers: {
                             'Content-Type': 'application/json',
@@ -144,7 +145,8 @@ def createStudyPage():
                     });
                 }
             }
-        """)
+        """.replace("BASE_URL", backend_api.BACKEND_API_URL),
+        )
 
         studyPlanText.change(
             fn=parseStudyPlanText,
@@ -181,7 +183,7 @@ def createStudyPage():
                     const endTime = document.querySelector('#endTime input').value;
 
                     // 获取用户信息并填充表单
-                    fetch(`http://localhost:18888/api/studyplans`, {
+                    fetch(`BASE_URL/api/studyplans`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -207,7 +209,7 @@ def createStudyPage():
                     });
                 }
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL),
         )
 
         suggestionText.change(

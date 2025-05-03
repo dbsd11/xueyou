@@ -1,12 +1,13 @@
 import gradio as gr
+from pages import backend_api
 
 def sendPhoneCode(phone):
     print(f"触发发送验证码到{phone}")
-    # 请求 http://localhost:18888/api/auth/sendCode
+    # 请求 /api/auth/sendCode
     import requests
     try:
         response = requests.post(
-            f"http://localhost:18888/api/auth/sendCode?phone={phone}",
+            f"{backend_api.BACKEND_API_URL}/api/auth/sendCode?phone={phone}",
             headers={
                 'Content-Type': 'application/json'
             }
@@ -54,7 +55,7 @@ def createUserInfoPage():
                 const visitorId = localStorage.getItem('visitorId');
                 if (token && visitorId) {
                     // 获取用户信息并填充表单
-                    fetch('http://localhost:18888/api/students/current', {
+                    fetch('BASE_URL/api/students/current', {
                         headers: {
                             'Content-Type': 'application/json',
                             'fp': visitorId
@@ -77,7 +78,7 @@ def createUserInfoPage():
                     });
                 }
             }
-        """)
+        """.replace("BASE_URL", backend_api.BACKEND_API_URL))
 
         gr.Markdown(f"""<h1><center>WUYOU study friends</center></h1>""")
         gr.Markdown(f"""<h3><center>UserInfo</center></h3>""")
@@ -137,8 +138,8 @@ def createUserInfoPage():
                 const code = document.querySelector('#code-input textarea').value;  
                 console.debug("call login api with phone and code", phone, code);
 
-                // 请求 http://localhost:18888/api/auth/verify
-                const response = await fetch(`http://localhost:18888/api/auth/verify?phone=${phone}&code=${code}`, {
+                // 请求 /api/auth/verify
+                const response = await fetch(`BASE_URL/api/auth/verify?phone=${phone}&code=${code}`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -148,7 +149,7 @@ def createUserInfoPage():
                 });
                 document.location.reload();
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL),
         )
 
         save_info_button.click(
@@ -171,7 +172,7 @@ def createUserInfoPage():
                 const visitorId = localStorage.getItem('visitorId');
                 if (visitorId) {
                     // 获取用户信息并填充表单
-                    fetch('http://localhost:18888/api/students/upsert', {
+                    fetch('BASE_URL/api/students/upsert', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -198,7 +199,7 @@ def createUserInfoPage():
                     });
                 }
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL),
         )
     return userInfoPage
 

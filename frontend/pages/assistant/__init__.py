@@ -1,8 +1,8 @@
 import gradio as gr
-from numpy import equal, var
 import pandas as pd
 import json
 from pathlib import Path
+from pages import backend_api
 
 def uploadExpenseFile(files):
     import requests
@@ -17,7 +17,7 @@ def uploadExpenseFile(files):
 
         # 发送请求
         response = requests.post(
-            f"http://localhost:18888/api/file/parse-expense-file",
+            f"{backend_api.BACKEND_API_URL}/api/file/parse-expense-file",
             files=form_data["files"]
         )
         response.raise_for_status()
@@ -60,7 +60,7 @@ def createAssistantPage():
                 const visitorId = localStorage.getItem('visitorId');
                 if (token && visitorId) {
                     // 获取用户信息并填充表单
-                    fetch(`http://localhost:18888/api/account-records/future-records`, {
+                    fetch(`BASE_URL/api/account-records/future-records`, {
                         method: "GET",
                         headers: {
                             'Content-Type': 'application/json',
@@ -80,7 +80,8 @@ def createAssistantPage():
                     });
                 }
             }
-        """)
+        """.replace("BASE_URL", backend_api.BACKEND_API_URL)
+        )
     
         gr.Markdown(f"""<h1><center>WUYOU study friends</center></h1>""")
         with gr.Row():
@@ -155,7 +156,7 @@ def createAssistantPage():
                                     }
 
                                     // 删除支出记录
-                                    fetch(`http://localhost:18888/api/account-records/delete`, {
+                                    fetch(`BASE_URL/api/account-records/delete`, {
                                         method: "POST",
                                         headers: {
                                             'Content-Type': 'application/json',
@@ -174,7 +175,7 @@ def createAssistantPage():
                                 }
 
                             }
-                            """
+                            """.replace("BASE_URL", backend_api.BACKEND_API_URL)
                         )
 
         with gr.Row():
@@ -247,7 +248,7 @@ def createAssistantPage():
                     page = document.querySelector('#page input') ? document.querySelector('#page input').value : 1;
 
                     // 获取支出记录
-                    fetch(`http://localhost:18888/api/account-records/time-range?startTime=${startTime}&endTime=${endTime}&page=${page}`, {
+                    fetch(`BASE_URL/api/account-records/time-range?startTime=${startTime}&endTime=${endTime}&page=${page}`, {
                         method: "GET",
                         headers: {
                             'Content-Type': 'application/json',
@@ -267,7 +268,7 @@ def createAssistantPage():
                     });
 
                     // 获取月均消费
-                    fetch(`http://localhost:18888/api/account-records/average-monthly-expense?startTime=${startTime}&endTime=${endTime}`, {
+                    fetch(`BASE_URL/api/account-records/average-monthly-expense?startTime=${startTime}&endTime=${endTime}`, {
                         method: "GET",
                         headers: {
                             'Content-Type': 'application/json',
@@ -287,7 +288,7 @@ def createAssistantPage():
                     });
                 }
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL)
         )
 
         expenseFileParseText.change(
@@ -308,7 +309,7 @@ def createAssistantPage():
                 const visitorId = localStorage.getItem('visitorId');
                 if (token && visitorId) {
                     // 获取用户信息并填充表单
-                    fetch('http://localhost:18888/api/account-records', {
+                    fetch('BASE_URL/api/account-records', {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -326,7 +327,7 @@ def createAssistantPage():
                     });
                 }
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL)
         )
 
         submitNewExpense.submit(
@@ -354,7 +355,7 @@ def createAssistantPage():
                     btn.style.opacity = '0.5';
 
                     // 获取用户信息并填充表单
-                    fetch('http://localhost:18888/api/account-records/parse-submit', {
+                    fetch('BASE_URL/api/account-records/parse-submit', {
                         method: "POST",
                         headers: {
                             'Content-Type': 'application/json',
@@ -377,6 +378,6 @@ def createAssistantPage():
                     });
                 }
             }
-            """
+            """.replace("BASE_URL", backend_api.BACKEND_API_URL)
         )
     return assistantPage
