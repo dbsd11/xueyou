@@ -113,7 +113,7 @@ services:
           JAVA_OPTS: >
             -Dspring.datasource.url=jdbc:h2:/mnt/xueyou/data;MODE=MySQL;DATABASE_TO_LOWER=TRUE;IGNORE_UNKNOWN_SETTINGS=TRUE;AUTO_RECONNECT=TRUE;AUTO_SERVER=TRUE;AUTO_SERVER_PORT=65000; -Dredis_host=127.0.0.1 -Dredis_port=6379 
             -Ddashscope_key=${vars.dashscope_key} -Ddashscope_base=${vars.dashscope_base} -Ddashscope_reasoning_model=${vars.dashscope_reasoning_model}
-            -Doss_endpoint=${vars.oss_endpoint} -Doss_bucket=${vars.oss_bucket} -Doss_accessKey=${vars.oss_accessKey} -Doss_secretKey=${vars.oss_secretKey} -Dcors.allowedOrigins=http://${vars.service_domain}
+            -Doss_endpoint=${vars.oss_endpoint} -Doss.bucket=${vars.oss_bucket} -Doss_accessKey=${vars.oss_accessKey} -Doss_secretKey=${vars.oss_secretKey} -Dcors.allowedOrigins=http://${vars.service_domain}
         customContainerConfig: 
           image: "registry.cn-hangzhou.aliyuncs.com/dbsnolimit/backend-xueyou:latest"
         customHealthCheckConfig:
