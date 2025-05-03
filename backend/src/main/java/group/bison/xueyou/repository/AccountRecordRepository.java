@@ -45,7 +45,7 @@ public interface AccountRecordRepository extends JpaRepository<AccountRecord, Lo
             "    SELECT SUM(COALESCE(a.amount, 0)) as monthly_spend " +
             "    FROM account_records a " +
             "    WHERE a.create_by = :createBy AND a.type = 'EXPENSE' AND a.create_time BETWEEN :startTime AND :endTime " +
-            "    GROUP BY DATE_FORMAT(a.create_time, '%Y-%m') " +
+            "    GROUP BY FORMATDATETIME(a.create_time, '%Y-%m') " +
             ") as monthly_spends", nativeQuery = true)
     BigDecimal getMonthlyAverageSpend(
             @Param("createBy") String createBy,
