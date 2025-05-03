@@ -68,7 +68,7 @@ import openvino.properties.hint as hints
 import openvino.properties.streams as streams
 
 from pathlib import Path
-int4_model_dir = Path(model_id.value) / "INT4_compressed_weights"
+int4_model_dir = Path("/mnt/xueyou-models/" + model_id.value) / "INT4_compressed_weights"
 if model_to_run.value == "INT4":
     model_dir = int4_model_dir
 elif model_to_run.value == "INT8":
