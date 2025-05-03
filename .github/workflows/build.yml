@@ -22,7 +22,7 @@ jobs:
       - name: Compile And Install Modules
         run: cd backend && mvn clean install -DskipTests=true -q
         timeout-minutes: 10
-      - name: Login To Huawei Cloud Docker Registry
+      - name: Login To Aliyun Cloud Docker Registry
         uses: docker/login-action@v1
         with:
           registry: registry.cn-hangzhou.aliyuncs.com
