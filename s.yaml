@@ -36,7 +36,7 @@ services:
         logConfig: auto
         ossMountConfig: 
           mountPoints: 
-            - bucketName: xueyou-tests
+            - bucketName: wuyou-study
               bucketPath: /models
               endpoint: https://oss-cn-hangzhou-internal.aliyuncs.com
               mountDir: /mnt/xueyou-models
