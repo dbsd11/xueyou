@@ -55,7 +55,7 @@ services:
           image: "registry.cn-hangzhou.aliyuncs.com/dbsnolimit/frontend-xueyou:latest"
         customHealthCheckConfig:
           failureThreshold: 6
-          httpGetUrl: /api/tags
+          httpGetUrl: /
           periodSeconds: 10
           timeoutSeconds: 3
           successThreshold: 1
@@ -117,7 +117,7 @@ services:
           image: "registry.cn-hangzhou.aliyuncs.com/dbsnolimit/backend-xueyou:latest"
         customHealthCheckConfig:
           failureThreshold: 6
-          httpGetUrl: /
+          httpGetUrl: /index.html
           periodSeconds: 10
           timeoutSeconds: 3
           successThreshold: 1
