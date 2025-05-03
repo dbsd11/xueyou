@@ -100,7 +100,7 @@ services:
           mountPoints:
             - serverAddr: 03808482b2-nwn30.cn-hangzhou.nas.aliyuncs.com
               nasDir: /xueyou-data
-              fcDir: /mnt/xueyou/data
+              fcDir: /mnt/xueyou
       function:
         name: "xueyou-backend-api"
         description: 'xueyou backend api'
