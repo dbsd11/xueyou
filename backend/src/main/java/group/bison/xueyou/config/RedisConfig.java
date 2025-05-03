@@ -10,6 +10,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import redis.embedded.RedisServer;
 import redis.embedded.RedisServerBuilder;
+import redis.embedded.util.OsArchitecture;
 
 import java.io.IOException;
 
@@ -20,13 +21,19 @@ public class RedisConfig {
 
     @Bean("redisServer")
     public static RedisServer redisServer() throws IOException {
-        RedisServer redisServer = new RedisServerBuilder()
-                .setting("maxheap 256m")
-                .port(6379).build();
+        RedisServer redisServer = new RedisServerBuilder().port(6379).build();
+
+        OsArchitecture osArchitecture = OsArchitecture.detect();
+        if (osArchitecture == OsArchitecture.WINDOWS_x86 || osArchitecture == OsArchitecture.WINDOWS_x86_64) {
+            redisServer = new RedisServerBuilder()
+                    .setting("maxheap 256m")
+                    .port(6379).build();
+        }
+
         try {
             redisServer.start();
         } catch (Exception e) {
-            logger.warn("failed start redis");
+            logger.warn("failed start redis", e);
         }
         return redisServer;
     }
