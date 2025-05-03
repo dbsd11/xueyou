@@ -1,4 +1,4 @@
-FROM docker-0.unsee.tech/library/openjdk:11-jdk-slim
+FROM openjdk:11-jdk-slim
 
 MAINTAINER bison
 

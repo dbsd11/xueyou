@@ -1,4 +1,4 @@
-FROM --platform=amd64 docker-0.unsee.tech/library/python:3.11.12-bullseye
+FROM --platform=amd64 python:3.11.12-bullseye
 
 RUN pip install -Uq pip && pip uninstall -q -y optimum optimum-intel 
 RUN pip install --pre -Uq "openvino>=2024.2.0" openvino-tokenizers[transformers] --extra-index-url https://storage.openvinotoolkit.org/simple/wheels/nightly 
